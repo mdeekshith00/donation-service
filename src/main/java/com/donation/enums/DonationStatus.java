@@ -1,10 +1,11 @@
 package com.donation.enums;
 
 public enum DonationStatus {
-	PENDING, 
+	PENDING_TEST, 
 	SCHEDULED, 
 	COLLECTED, 
-	CANCELLED, 
+	SUCCESS,
+	REJECTED, 
 	COMPLETED
 
 }
