@@ -43,9 +43,8 @@ public class BloodSample implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sample_id")
 		private Integer sampleId;            // Unique identifier for the sample
-	    
-	    private int donationId;          // Donation identifier
-	    
+
+	    @Column(unique = true, nullable = false)
 	    private String labelBarcode;     // Barcode or QR code label
 	    
 	    private String tubeType;         // Type of tube (e.g., EDTA, CPDA)
@@ -53,6 +52,9 @@ public class BloodSample implements Serializable{
 	    private LocalDateTime collectedAt; // Date and time of collection
 	    
 	    private String collectedBy;     // Person who collected the sample
+	    
+	    @Column(nullable = false)
+	    private Double volumeMl; // Amount of blood in milliliters (e.g., 5 ml)
 	    
 	    private double storageTemp;      // Storage temperature in Celsius
 	    

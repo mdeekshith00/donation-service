@@ -5,10 +5,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.common.enums.BloodGroupType;
+import com.donation.enums.ComponentStatus;
+import com.donation.enums.ComponentType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,16 +43,21 @@ public class BloodComponent implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sample_id")
 		private Integer componentId;
-	    private UUID donationId;
-	    private UUID parentSampleId;
-	    private String componentType;      // e.g., "RBC", "Plasma", "Platelet", "Cryo"
+
 	    private Double volumeMl;
 	    private BloodGroupType bloodGroup;        // e.g., "A+", "B-", etc.
 	    private LocalDate collectionDate;
 	    private LocalDate expiryDate;
 	    private UUID processingBatchId;
-	    private String status;            // e.g., "QUARANTINED", "AVAILABLE", etc.
 	    private UUID storageLocationId;
+	    
+	    @Enumerated(EnumType.STRING)
+	    private ComponentType componentType; // RBC, PLASMA, PLATELETS, CRYO
+	    
+	    @Enumerated(EnumType.STRING)
+	    private ComponentStatus status; // QUARANTINED, AVAILABLE, EXPIRED, SHIPPED
+
+	    private UUID parentSampleId; // optional, links to original sample if needed
 	    
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "lab_id", nullable = false)

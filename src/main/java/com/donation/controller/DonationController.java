@@ -19,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/donation-event")
 @RequiredArgsConstructor
 public class DonationController {
-	
-	private final String serviceToken = "my-shared-secret";
+
 	private final DonationEventService DonationEventService;
 	
 	@PostMapping("/donate")
 	public ResponseEntity<DonationEventDto>  addDonationEvent(@RequestBody DonationResponseDto donationEventVo) {
+		log.info(" sucessfully donar details reached donation service");
 		DonationEventDto event =	DonationEventService.addDonationEvent(donationEventVo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(event);
 		

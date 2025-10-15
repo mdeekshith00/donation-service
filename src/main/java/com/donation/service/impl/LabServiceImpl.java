@@ -1,6 +1,5 @@
 package com.donation.service.impl;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -10,16 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.common.constants.ErrorConstants;
-import com.common.dto.DonationResponseDto;
-import com.common.enums.BloodGroupType;
-import com.common.enums.DonationType;
 import com.common.exception.BloodBankBusinessException;
 import com.common.util.BarCodeGeneratorUtil;
-import com.donation.dto.DonationEventDto;
+import com.donation.dto.CreateLabDto;
 import com.donation.entity.BloodComponent;
 import com.donation.entity.BloodSample;
 import com.donation.entity.DonationEvent;
-import com.donation.enums.CollectionType;
+import com.donation.entity.Lab;
 import com.donation.enums.ComponentStatus;
 import com.donation.enums.ComponentType;
 import com.donation.enums.DonationStatus;
@@ -27,7 +23,8 @@ import com.donation.repositary.BloodComponentRepositary;
 import com.donation.repositary.BloodSampleRepositary;
 import com.donation.repositary.DonationEventRepositary;
 import com.donation.repositary.LabRepositary;
-import com.donation.service.DonationEventService;
+import com.donation.service.LabService;
+import com.donation.vo.CreateLabVO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DonationEventServiceImpl implements DonationEventService {
+public class LabServiceImpl implements LabService{
 	
-	private final DonationEventRepositary donationEventRepositary;
+	private final DonationEventRepositary donationRepo;
 	private final BloodSampleRepositary  bloodSampleRepositary;
 	private final BloodComponentRepositary bloodComponentRepositary;
 	private final LabRepositary labRepo;
@@ -45,60 +42,13 @@ public class DonationEventServiceImpl implements DonationEventService {
 	private final static double bloodTest = 10.00;
 	
 	
-	@Override
-	public DonationEventDto addDonationEvent(DonationResponseDto donationEventVo) {
+	public void splitBlood(Integer donationId , Integer labId) {
 		// TODO Auto-generated method stub
-		log.info("donation add into donation event entity ");
-		DonationEvent event = new DonationEvent();
-		Optional.ofNullable(donationEventVo.getBloodGroup()).map(Enum::name).map(BloodGroupType::valueOf).ifPresent(event::setBloodGroup);
-		Optional.ofNullable(donationEventVo.getDonorId()).ifPresent(event::setDonorId);
-		Optional.ofNullable(donationEventVo.getEventId()).ifPresent(event::setBookingId);
-		Optional.ofNullable(donationEventVo.getVolume()).ifPresent(event::setVolumeCollectedMl);
-		Optional.ofNullable(donationEventVo.getDonationType()).map(Enum::name).map(DonationType::valueOf).ifPresent(event::setDonationType);
-		Optional.ofNullable(donationEventVo.getTemperature()).ifPresent(event::setTemperature);
-		Optional.ofNullable(donationEventVo.getPulse()).ifPresent(event::setPulse);
-		Optional.ofNullable(donationEventVo.getAlcoholLast24h()).ifPresent(event::setAlcoholLast24h);
-		Optional.ofNullable(donationEventVo.getTattooLast6Months()).ifPresent(event::setTattooLast6Months);
-		Optional.ofNullable(donationEventVo.getDrugUse()).ifPresent(event::setDrugUse);
-		Optional.ofNullable(donationEventVo.getVolume()).ifPresent(event::setVolumeCollectedMl);
-
-		event.setCollectionType(CollectionType.WALK_IN);
-		event.setDonationDate(LocalDateTime.now());
-		event.setPhlebotomistId(UUID.randomUUID());
-		event.setCreatedAt(Instant.now());
-		event.setCollectedAt(Instant.now());
-		event.setUpdatedAt(Instant.now());
-		event.setStatus(DonationStatus.COLLECTED);
-		donationEventRepositary.save(event);
-		log.info("donation details saved.....");
-		return DonationEventDto.builder()
-				.donationId(null)
-				.donorId(event.getDonorId())
-				.bookingId(event.getBookingId())
-				.volumeCollectedMl(event.getVolumeCollectedMl())
-				.bloodGroup(event.getBloodGroup().toString())
-				.collectedAt(event.getCollectedAt())
-				.collectionType(event.getCollectionType().toString())
-				.createdAt(event.getCreatedAt())
-				.updatedAt(event.getUpdatedAt())
-				.notes(event.getNotes())
-				.status(event.getStatus().toString())
-				.build();
-	}
-
-
-	@Override
-	public DonationEventDto updateDonationEvent( DonationResponseDto donationEventVo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void splitBlood(Integer donationId) {
-		// TODO Auto-generated method stub
-		DonationEvent event = donationEventRepositary.findByDonationIdAndStatus(donationId, DonationStatus.COLLECTED)
+		DonationEvent event = donationRepo.findByDonationIdAndStatus(donationId, DonationStatus.COLLECTED)
 				.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.DONATION_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
+		
+		Lab lab =  labRepo.findById(labId)
+		.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.LAB_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
         
 		Double bloodQuantity =  event.getVolumeCollectedMl();
 		if(bloodQuantity < 50.00 || bloodQuantity == null) {
@@ -132,7 +82,36 @@ public class DonationEventServiceImpl implements DonationEventService {
 		bloodComponent.setParentSampleId(UUID.randomUUID());
 		bloodComponent.setDonation(event);
 		
+		bloodComponentRepositary.save(bloodComponent);
+		
 	}
-	
+
+
+	@Override
+	public CreateLabDto createLab(CreateLabVO labVO) {
+		// TODO Auto-generated method stub
+		Lab lab = new Lab();
+		Optional.ofNullable(labVO.getLabName()).ifPresent(lab::setLabName);
+		Optional.ofNullable(labVO.getLocation()).ifPresent(lab::setLocation);
+		Optional.ofNullable(labVO.getContactPerson()).ifPresent(lab::setContactPerson);
+		Optional.ofNullable(labVO.getContactEmail()).ifPresent(lab::setContactEmail);
+		Optional.ofNullable(labVO.getContactPhone()).ifPresent(lab::setContactPhone);
+		Optional.ofNullable(labVO.getRegistrationNumber()).ifPresent(lab::setRegistrationNumber);
+
+		lab.setCreatedAt(LocalDateTime.now());
+		lab.setUpdatedAt(LocalDateTime.now());
+
+		labRepo.save(lab);
+		return CreateLabDto.builder()
+				.labName(lab.getLabName())
+				.location(lab.getLocation())
+				.contactEmail(lab.getContactEmail())
+				.contactPerson(lab.getContactPerson())
+				.contactPhone(lab.getContactPhone())
+				.registrationNumber(lab.getRegistrationNumber())
+				.createdAt(lab.getCreatedAt())
+				.updatedAt(lab.getUpdatedAt())
+				.build();
+	}
 
 }

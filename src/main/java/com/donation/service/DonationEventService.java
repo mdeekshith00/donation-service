@@ -6,4 +6,6 @@ import com.donation.dto.DonationEventDto;
 public interface DonationEventService {
 
 	public DonationEventDto addDonationEvent(DonationResponseDto donationEventVo);
+	public DonationEventDto updateDonationEvent(DonationResponseDto donationEventVo);
+	public void splitBlood(Integer donationId);
 }
