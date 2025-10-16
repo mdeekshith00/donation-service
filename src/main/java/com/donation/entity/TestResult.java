@@ -66,11 +66,7 @@ public class TestResult implements Serializable{
 	    @JoinColumn(name = "blood_test_id")
 	    @JsonBackReference
 	    private BloodTest bloodTest;
-	    
-	    @OneToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "donations_id", nullable = false)
-	    @JsonBackReference
-	    private DonationEvent donationEvent;;
+
 
 
 	    // Getters and Setters can be added here as needed

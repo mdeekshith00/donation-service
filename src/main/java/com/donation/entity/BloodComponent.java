@@ -45,16 +45,20 @@ public class BloodComponent implements Serializable {
 		private Integer componentId;
 
 	    private Double volumeMl;
+	    @Enumerated(EnumType.STRING) 
+	    @Column(nullable = true)
 	    private BloodGroupType bloodGroup;        // e.g., "A+", "B-", etc.
 	    private LocalDate collectionDate;
 	    private LocalDate expiryDate;
 	    private UUID processingBatchId;
 	    private UUID storageLocationId;
 	    
-	    @Enumerated(EnumType.STRING)
+	    @Enumerated(EnumType.STRING) 
+	    @Column(nullable = true)
 	    private ComponentType componentType; // RBC, PLASMA, PLATELETS, CRYO
 	    
-	    @Enumerated(EnumType.STRING)
+	    @Enumerated(EnumType.STRING) 
+	    @Column(nullable = true)
 	    private ComponentStatus status; // QUARANTINED, AVAILABLE, EXPIRED, SHIPPED
 
 	    private UUID parentSampleId; // optional, links to original sample if needed
@@ -63,16 +67,7 @@ public class BloodComponent implements Serializable {
 	    @JoinColumn(name = "lab_id", nullable = false)
 	    @JsonBackReference
 	    private Lab lab;
-	    
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "donations_id", insertable = false, updatable = false)
-	    @JsonBackReference
-	    private DonationEvent donation;
-	    
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "shipment_id")
-	    @JsonBackReference
-	    private TransferShipment shipment;
+
 
 
 

@@ -66,7 +66,7 @@ public class Lab  implements Serializable {
 		    private LocalDateTime updatedAt;
 		    
 		    @OneToOne(fetch = FetchType.LAZY)
-		    @JoinColumn(name = "donation_id", nullable = false, unique = true)
+		    @JoinColumn(name = "donation_id")
 		    @JsonBackReference
 		    private DonationEvent donationEvent;
 		    

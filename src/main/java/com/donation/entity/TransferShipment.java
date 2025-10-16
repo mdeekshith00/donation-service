@@ -62,9 +62,6 @@ public class TransferShipment implements Serializable{
 	@JsonBackReference
 	private Lab lab;
 
-	@OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference
-	private List<BloodComponent> bloodComponents;
 
 	
 

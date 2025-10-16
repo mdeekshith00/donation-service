@@ -49,6 +49,7 @@ public class DonationEvent implements Serializable{
 	    private Integer donorId;               // Foreign Key to Donor-
 
 	    @Enumerated(EnumType.STRING) 
+	    @Column(nullable = true)
 	    private BloodGroupType bloodGroup;
 	    
 	    private Integer bookingId;             // Optional, if booked
@@ -64,6 +65,7 @@ public class DonationEvent implements Serializable{
 	    private Instant collectedAt;        // timestamp
 	    
 	    @Enumerated(EnumType.STRING)
+	    @Column(nullable = true)
 	    private DonationType donationType; // WHOLE_BLOOD, PLASMA, PLATELETS
 	    
 	    @Enumerated(EnumType.STRING) 
@@ -74,9 +76,9 @@ public class DonationEvent implements Serializable{
 	    
 	    @Enumerated(EnumType.STRING) 
 	    @Column(nullable = true)
-	    private DonationStatus status;      // Enum or class representing state machine
+	    private DonationStatus status;    
 	    
-	    private String notes;               // text notes
+	    private String notes;   
 	    
 	    private UUID createdBy;             // user id who created
 	    
@@ -102,18 +104,7 @@ public class DonationEvent implements Serializable{
 	    @JsonManagedReference
 	    private Lab lab;
 	    
-	    @OneToOne(mappedBy = "donationEvent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    @JsonManagedReference
-	    private TestResult testResult;
 
-	    @OneToMany(mappedBy = "donationEvent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    @JsonManagedReference
-	    private List<BloodSample> bloodSamples;
-
-
-	    @OneToMany(mappedBy = "donation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    @JsonManagedReference
-	    private List<BloodComponent> bloodComponents;
 
 
 }

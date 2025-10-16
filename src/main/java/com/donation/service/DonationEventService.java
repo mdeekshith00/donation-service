@@ -7,5 +7,7 @@ public interface DonationEventService {
 
 	public DonationEventDto addDonationEvent(DonationResponseDto donationEventVo);
 	public DonationEventDto updateDonationEvent(DonationResponseDto donationEventVo);
-	public void splitBlood(Integer donationId);
+	public String sendBloodToLab(Integer donationId ,  Integer labId);
+	public DonationEventDto getDonationEvent(Integer donationId);
+	
 }

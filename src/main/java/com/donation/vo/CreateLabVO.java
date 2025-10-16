@@ -39,8 +39,7 @@ public class CreateLabVO {
     private String registrationNumber; // optional govt registration ID
 
     private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
+
 
 
 }

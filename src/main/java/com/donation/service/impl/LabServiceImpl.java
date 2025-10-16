@@ -41,55 +41,10 @@ public class LabServiceImpl implements LabService{
 	
 	private final static double bloodTest = 10.00;
 	
-	
-	public void splitBlood(Integer donationId , Integer labId) {
-		// TODO Auto-generated method stub
-		DonationEvent event = donationRepo.findByDonationIdAndStatus(donationId, DonationStatus.COLLECTED)
-				.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.DONATION_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
-		
-		Lab lab =  labRepo.findById(labId)
-		.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.LAB_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
-        
-		Double bloodQuantity =  event.getVolumeCollectedMl();
-		if(bloodQuantity < 50.00 || bloodQuantity == null) {
-			throw new BloodBankBusinessException(ErrorConstants.BLOOD_QUANTITY_INVALID ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA);
-		}
-		
-		Double boodForTest = (bloodQuantity -bloodTest) - event.getVolumeCollectedMl();
-		log.info("Splitting blood for testing in blood sample: {} ml", boodForTest);
-		
-		BloodSample bloodSample = new BloodSample();
-//		BLOOD SAMPLE TO TEST BLOOD 
-		bloodSample.setLabelBarcode(BarCodeGeneratorUtil.generateBarcode(String.valueOf(event.getDonationId()), event.getBloodGroup().toString()));
-		bloodSample.setTubeType("EDTA");
-		bloodSample.setCollectedAt(LocalDateTime.now());
-		bloodSample.setVolumeMl(boodForTest);
-		bloodSample.setStorageTemp(4.0);
-		bloodSample.setStatus("COLLECTED");
-		bloodSample.setDonationEvent(event);
-		
-		bloodSampleRepositary.save(bloodSample);
-		
-		BloodComponent bloodComponent = new BloodComponent();
-		bloodComponent.setVolumeMl(event.getVolumeCollectedMl()-bloodTest);
-		bloodComponent.setBloodGroup(null);
-		bloodComponent.setCollectionDate(LocalDate.now());
-		bloodComponent.setExpiryDate(null);
-		bloodComponent.setProcessingBatchId(UUID.fromString(event.getBloodGroup().toString()));
-		bloodComponent.setStorageLocationId(UUID.randomUUID());
-		bloodComponent.setComponentType(ComponentType.RBC);
-		bloodComponent.setStatus(ComponentStatus.AVAILABLE);
-		bloodComponent.setParentSampleId(UUID.randomUUID());
-		bloodComponent.setDonation(event);
-		
-		bloodComponentRepositary.save(bloodComponent);
-		
-	}
-
-
 	@Override
 	public CreateLabDto createLab(CreateLabVO labVO) {
 		// TODO Auto-generated method stub
+		log.info("new Creating ...");
 		Lab lab = new Lab();
 		Optional.ofNullable(labVO.getLabName()).ifPresent(lab::setLabName);
 		Optional.ofNullable(labVO.getLocation()).ifPresent(lab::setLocation);
@@ -102,6 +57,8 @@ public class LabServiceImpl implements LabService{
 		lab.setUpdatedAt(LocalDateTime.now());
 
 		labRepo.save(lab);
+		
+		log.info("Sucessfully saved Lab :{} " , lab.getLabId());
 		return CreateLabDto.builder()
 				.labName(lab.getLabName())
 				.location(lab.getLocation())
@@ -113,5 +70,17 @@ public class LabServiceImpl implements LabService{
 				.updatedAt(lab.getUpdatedAt())
 				.build();
 	}
+
+	@Override
+	public void verifyBloodTest(Integer labId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
 
 }

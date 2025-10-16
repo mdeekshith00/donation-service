@@ -5,12 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.common.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -58,12 +61,9 @@ public class BloodSample implements Serializable{
 	    
 	    private double storageTemp;      // Storage temperature in Celsius
 	    
-	    private String status;           // Status (COLLECTED, LOST, SENT_TO_LAB, REJECTED)
-
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "donations_id", insertable = false, updatable = false)
-	    @JsonBackReference
-	    private DonationEvent donationEvent;
+	    @Enumerated(EnumType.STRING) 
+	    @Column(nullable = true)
+	    private StatusType status;           // Status (COLLECTED, LOST, SENT_TO_LAB, REJECTED)
 
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "lab_id")

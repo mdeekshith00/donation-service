@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.donation.enums.BloodGroupType;
+import com.donation.enums.Results;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,28 +45,29 @@ public class BloodTest  implements Serializable {
 	    @Column(name = "blood_test_result_id")
 	    private Integer bloodTestResultId;
 	    
-		@ManyToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name = "lab_id")
-		@JsonBackReference
-		private Lab lab;
-	    
+		@Enumerated(EnumType.STRING) 
 	    @Column(name = "bloodGroupConfirmed" ,nullable = false)
 	    private BloodGroupType bloodGroupConfirmed;
 
+		@Enumerated(EnumType.STRING)
 	    @Column(nullable = false)
-	    private Boolean HIVTest;
+	    private Results HIVTest;
 
+		@Enumerated(EnumType.STRING)
 	    @Column(nullable = false)
-	    private String HepatitisBTest;
+	    private  Results HepatitisBTest;
 
+		@Enumerated(EnumType.STRING)
 	    @Column(nullable = false)
-	    private String HepatitisCTest;
+	    private Results HepatitisCTest;
  
+		@Enumerated(EnumType.STRING)
 	    @Column(nullable = false)
-	    private String SyphilisTest;
+	    private Results SyphilisTest;
 
+		@Enumerated(EnumType.STRING)
 	    @Column(nullable = false)
-	    private String MalariaTest;
+	    private Results MalariaTest;
 
 	    @Column(length = 200)
 	    private String otherTests; // free-text for additional tests
@@ -77,6 +81,11 @@ public class BloodTest  implements Serializable {
 
 	    @Column(nullable = false)
 	    private LocalDateTime testDateTime;
+	    
+		@ManyToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "lab_id")
+		@JsonBackReference
+		private Lab lab;
 	    
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "sample_id")

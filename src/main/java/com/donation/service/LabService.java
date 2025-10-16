@@ -6,5 +6,6 @@ import com.donation.vo.CreateLabVO;
 public interface LabService {
 	
 	public CreateLabDto createLab(CreateLabVO labVO);
+	public void verifyBloodTest(Integer labId);
 
 }
