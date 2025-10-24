@@ -1,24 +1,26 @@
-package com.donation.vo;
+package com.donation.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import com.donation.entity.BloodSample;
+import com.donation.entity.Lab;
+import com.donation.entity.TestResult;
 import com.donation.enums.BloodGroupType;
 import com.donation.enums.Results;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class BloodTestVo {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BloodTestResultDto {
 	
+	    private Integer bloodTestResultId;
 	    private BloodGroupType bloodGroupConfirmed;
 	    private Results HIVTest;
 	    private  Results HepatitisBTest;
@@ -28,10 +30,8 @@ public class BloodTestVo {
 	    private String otherTests; // free-text for additional tests
 	    private String testedBy; // labtech id or name
 	    private LocalDateTime testDateTime;
-    	private TestResultVO testResult;
-    	
-    	private String results; 
-    	  private List<String> testsRequested;
-	
+		private LabDto lab;
+	    private BloodSampleDto bloodSample;
+	    private TestResultDto testResult;
 
 }

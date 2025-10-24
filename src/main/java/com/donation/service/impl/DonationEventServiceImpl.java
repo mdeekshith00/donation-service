@@ -126,7 +126,9 @@ public class DonationEventServiceImpl implements DonationEventService {
 		// TODO Auto-generated method stub
 		 DonationEvent donationEvent =  donationEventRepositary.findByDonationIdAndStatus(donationId , DonationStatus.COLLECTED)
 					.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.DONATION_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
-	  log.debug("fetching donation event :{}",donationEvent.getDonationId());
+		    
+		 log.debug("Fetched DonationEvent: donationId={}, volumeCollected={}ml, bloodGroup={}",
+		            donationEvent.getDonationId(), donationEvent.getVolumeCollectedMl(), donationEvent.getBloodGroup());
 	  
 		 Lab lab = labRepo.findById(labId)
 					.orElseThrow(()-> new BloodBankBusinessException(ErrorConstants.LAB_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
@@ -179,7 +181,7 @@ public class DonationEventServiceImpl implements DonationEventService {
 		    log.info("Blood sent to lab successfully: donationId={}, labId={}, totalVolume={}ml, components={}", 
 		             donationId, labId, totalVolume, splitMap);
 
-		    return "Blood sent to lab successfully:";
+		    return "Blood sented to lab successfully:";
 	}
 
 

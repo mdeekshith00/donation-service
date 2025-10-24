@@ -65,10 +65,9 @@ public class Lab  implements Serializable {
 		    @Column(nullable = false)
 		    private LocalDateTime updatedAt;
 		    
-		    @OneToOne(fetch = FetchType.LAZY)
-		    @JoinColumn(name = "donation_id")
-		    @JsonBackReference
-		    private DonationEvent donationEvent;
+		    @OneToMany(mappedBy = "lab", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+		    @JsonManagedReference
+		    private List<DonationEvent> donationEvents = new ArrayList<>();
 		    
 		 // 1 lab can process multiple blood components
 		    @OneToMany(mappedBy = "lab", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -3,16 +3,14 @@ package com.donation.entity;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationType;
 import com.donation.enums.CollectionType;
 import com.donation.enums.DonationStatus;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,8 +19,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -99,9 +97,10 @@ public class DonationEvent implements Serializable{
 	    private int pulse;                   // Pulse rate
 	    
 	    private double temperature;          // Body temperature in Celsius or Fahrenheit
-	    
-	    @OneToOne(mappedBy = "donationEvent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    @JsonManagedReference
+
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "lab_id")
+	    @JsonBackReference
 	    private Lab lab;
 	    
 

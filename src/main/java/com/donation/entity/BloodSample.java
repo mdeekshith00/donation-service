@@ -36,12 +36,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "blood_sample")
 public class BloodSample implements Serializable{
-
-
-	    /**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sample_id")
